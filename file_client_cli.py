@@ -11,7 +11,6 @@ def send_command(command_str=""):
     try:
         sock.connect(server_address)
         logging.warning(f"Connecting to {server_address}")
-        
 
         if not command_str.endswith('\\r\\n\\r\\n'):
             command_str += '\\r\\n\\r\\n'
@@ -58,17 +57,6 @@ def remote_list():
     else:
         print("Gagal")
         return False
-    
-def remote_post(filename=""):
-    file = open(filename,'rb')
-    isifile = base64.b64encode(file.read()).decode()
-    command_str=f"POST {filename} {isifile}\r\n\r\n"
-    hasil = send_command(command_str)
-    if (hasil['status']=='OK'):
-        print("File berhasil dikirim")
-        return True
-    else:
-        print("Gagal Upload")
 
 def remote_get(filename=""):
     command_str = f"GET {filename}"
@@ -84,14 +72,31 @@ def remote_get(filename=""):
         print("Gagal GET")
         return False
 
-def remote_delete(filename=""):
-    command_str=f"DELETE {filename}"
+def remote_upload(filename=""):
+    f = open(filename, 'rb')
+    data = base64.b64encode(f.read()).decode()
+    f.close()
+
+    command_str = f"UPLOAD {filename} {data}\r\n\r\n"
     hasil = send_command(command_str)
-    if hasil['status']=='OK':
-        print("File berhasil dihapus")
+
+    if hasil['status'] == 'OK':
+        print(hasil['data'])
+        print(f"File {filename} berhasil diupload ke server")
         return True
     else:
-        print("Gagal Delete")
+        print("Gagal mengupload file,", hasil['data'])
+        return False
+        
+def remote_delete(filename=""):
+    command_str = f"DELETE {filename}\r\n\r\n"
+    hasil = send_command(command_str)
+    if hasil['status'] == 'OK':
+        print(hasil['data'])
+        print(f"File {filename} berhasil didelete dari server")
+        return True
+    else:
+        print("Gagal menghapus file,", hasil['data'])
         return False
 
 if __name__ == '__main__':
