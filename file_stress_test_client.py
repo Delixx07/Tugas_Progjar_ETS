@@ -14,7 +14,6 @@ from collections import defaultdict
 import statistics
 import csv
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -331,8 +330,7 @@ class StressTestClient:
                     self.results[operation].append(result)
                 except Exception as e:
                     logging.error(f"Worker failed with exception: {str(e)}")
-        
-        # Calculate statistics
+    
         durations = [r['duration'] for r in all_results if r['status'] == 'OK']
         throughputs = [r['throughput'] for r in all_results if r.get('throughput', 0) > 0]
         
@@ -386,8 +384,7 @@ class StressTestClient:
                             if stats:
                                 stats['server_pool_size'] = server_pool_size
                                 all_stats.append(stats)
-        
-        # Save all results to CSV
+                                
         self.save_results_to_csv(all_stats)
         
     def save_results_to_csv(self, all_stats):
@@ -455,5 +452,5 @@ if __name__ == "__main__":
             stats['server_pool_size'] = server_pool_sizes[0]
             client.save_results_to_csv([stats])
     else:
-        # Run all test combinations
+        
         client.run_all_tests(file_sizes, client_pool_sizes, server_pool_sizes, executor_types, operations)
