@@ -38,7 +38,6 @@ class FileInterface:
     def upload(self, params=[]):
         if len(params) < 2:
             return dict(status='ERROR', data='Perintah UPLOAD butuh namafile dan data')
-        
         filename = params[0]
         filedata_base64 = params[1]
         file_path = os.path.join(self.storage_dir, filename)
