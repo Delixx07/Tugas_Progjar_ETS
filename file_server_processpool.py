@@ -1,3 +1,4 @@
+from file_protocol import FileProtocol
 import socket
 import logging
 import concurrent.futures
@@ -7,7 +8,7 @@ import threading
 import os
 import json
 import time
-from file_protocol import FileProtocol
+
 
 def process_data_task(data_string):
     pid = os.getpid()
@@ -37,11 +38,9 @@ def handle_connection(conn, addr, pool):
             except Exception as e:
                 logging.error(f"Recv error: {e}", exc_info=True)
                 break
-
             while b"\r\n\r\n" in buffer:
                 command_data, buffer = buffer.split(b"\r\n\r\n", 1)
                 command_str = command_data.decode()
-
                 future = pool.submit(process_data_task, command_str)
                 try:
                     result = future.result(timeout=50)
