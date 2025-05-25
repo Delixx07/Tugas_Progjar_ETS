@@ -16,7 +16,6 @@ def send_command(command_str=""):
             command_str += '\\r\\n\\r\\n'
             
         sock.sendall(command_str.encode())
-        
         data_received = b""
         while True:
             # Terima data dalam buffer yang lebih besar
