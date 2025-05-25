@@ -1,8 +1,8 @@
+from file_protocol import FileProtocol
 import socket
 import logging
 import concurrent.futures
 import argparse
-from file_protocol import FileProtocol
 
 def handle_client(connection, address):
     """Function to handle client requests with correct byte buffering"""
@@ -11,19 +11,14 @@ def handle_client(connection, address):
     fp = FileProtocol()
     try:
         connection.settimeout(300)
-
         while True:
             data = connection.recv(1024 * 1024)
             if not data:
                 break
-
             buffer += data
-            
             while b"\r\n\r\n" in buffer:
                 command_data, buffer = buffer.split(b"\r\n\r\n", 1)
-                
                 hasil_str = fp.proses_string(command_data.decode())
-                
                 response = hasil_str + "\r\n\r\n"
                 connection.sendall(response.encode())
     except Exception as e:
