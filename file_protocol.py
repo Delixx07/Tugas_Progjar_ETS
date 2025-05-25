@@ -10,14 +10,12 @@ class FileProtocol:
         try:
             parts = string_datamasuk.strip().split(' ', 1)
             command = parts[0].lower()
-            
             params = []
             if len(parts) > 1:
                 if command == 'upload':
                     params = parts[1].split(' ', 1)
                 else:
                     params = [parts[1]]
-
             logging.warning(f"Request: {command}, Params: {params[0] if params else 'N/A'}")
 
             if hasattr(self.file, command):
